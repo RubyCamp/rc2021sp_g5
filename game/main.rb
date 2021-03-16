@@ -20,17 +20,21 @@ require_relative 'scenes/map_editor/map'
 require_relative 'scenes/map_editor/chip_pallet'
 require_relative 'scenes/map_editor/button'
 
+require_relative 'scenes/title/director'
+
 Window.width = 1024
 Window.height = 768
 Window.caption = "RubyCamp 2021SP Sample1"
 
 Scene.add(Game::Director.new, :game)
 Scene.add(MapEditor::Director.new, :map_editor)
-Scene.move_to(:game)
+Scene.add(Title::Director.new, :title)
+Scene.move_to(:title)
 
 Window.loop do
   break if Input.key_push?(K_ESCAPE)
   Scene.move_to(:game) if Input.key_push?(K_G)
   Scene.move_to(:map_editor) if Input.key_push?(K_M)
+  Scene.move_to(:title) if Input.key_push?(K_T)
   Scene.play
 end
