@@ -8,7 +8,7 @@ module Game
     def initialize
       player_img =  Image.load("images/player.png")
       @map = Map.new(50, 50, 2, 5, 15)
-      @map.set_scroll_direction(1, 1)
+      @map.set_scroll_direction(1,1)
       @player = Player.new(10, 10, player_img, @map)
       @font = Font.new(28)
       @debug_box = RenderTarget.new(32, 32, C_YELLOW)
@@ -38,6 +38,9 @@ module Game
           Window.draw(pos[0], pos[1], @debug_box)
         end
       end
+
+      @map.set_scroll_direction(1,Input.y)
+
     end
 
     private
