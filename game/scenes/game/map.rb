@@ -13,7 +13,7 @@ module Game
 
     # マップスクロール方向を規定する
     def set_scroll_direction(sdx, sdy)
-      self.scroll_direction_x, self.scroll_direction_y = sdx, sdy
+      self.scroll_direction_x, self.scroll_direction_y = sdx, sdy 
     end
 
     # 1フレーム分のマップスクロール処理
