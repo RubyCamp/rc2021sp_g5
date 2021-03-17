@@ -16,6 +16,7 @@ class MapBase < Component
     self.root_y = root_y
     @mx = mx
     @my = my
+    @scroll_speed = speed
     reload_map_array
     @map_width = self.map_array.first.size
     @map_height = self.map_array.size

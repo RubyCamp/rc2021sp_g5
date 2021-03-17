@@ -25,7 +25,11 @@ module Game
       @debug_boxes = []
 
       if Input.key_push?(K_SPACE)
-        @player.start_jump
+        #if @collision_bottom
+          @player.start_jump
+          #@dy += @jump_power
+          #@player.update(Input.x)
+        #end
       end
 
       @map.update
@@ -43,7 +47,7 @@ module Game
         if @player.scroll_x(Input.x) > 0
           @map.set_scroll_direction(1,@player.scroll_y)
         else
-          @map.set_scroll_direction(0,@player.scroll_y)
+          @map.set_scroll_direction(1,@player.scroll_y)
         end
 
     end
