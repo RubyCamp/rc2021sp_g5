@@ -1,5 +1,5 @@
 module MapChip
-  PATH = "images/maptile.png"
+  PATH = "images/maptile2.png"
   WEIGHT_PATH = "data/chip.dat"
   CHIP_SIZE = 32
 
