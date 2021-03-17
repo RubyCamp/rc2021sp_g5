@@ -83,7 +83,7 @@ module Game
       @dx = 0
       @input_x = input_x
       @speed_x += input_x
-     @speed_x = SPEED_LIMIT_X if @speed_x > SPEED_LIMIT_X
+      @speed_x = SPEED_LIMIT_X if @speed_x > SPEED_LIMIT_X
       @speed_x = SPEED_LIMIN_X if @speed_x < SPEED_LIMIN_X
       @dx = @speed_x / 10.0 if @speed_x != 0
       @dx -= @map.scroll_direction_x if @input_x < 0  # スクロールと逆向きへの移動時は、スクロール分の移動量を打ち消す必要があるため
