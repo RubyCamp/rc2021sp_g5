@@ -25,7 +25,11 @@ module Game
       @debug_boxes = []
 
       if Input.key_push?(K_SPACE)
-        @player.start_jump
+        #if @collision_bottom
+          @player.start_jump
+          #@dy += @jump_power
+          #@player.update(Input.x)
+        #end
       end
 
       @map.update
