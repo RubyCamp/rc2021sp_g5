@@ -83,7 +83,7 @@ module Game
       @dx = 0
       @input_x = input_x
       @speed_x += input_x
-     @speed_x = SPEED_LIMIT_X if @speed_x > SPEED_LIMIT_X
+      @speed_x = SPEED_LIMIT_X if @speed_x > SPEED_LIMIT_X
       @speed_x = SPEED_LIMIN_X if @speed_x < SPEED_LIMIN_X
       @dx = @speed_x / 10.0 if @speed_x != 0
       @dx -= @map.scroll_direction_x if @input_x < 0  # スクロールと逆向きへの移動時は、スクロール分の移動量を打ち消す必要があるため
@@ -91,12 +91,27 @@ module Game
         @speed_x /= 1.1 
         if @speed_x < 1 && @speed_x > 0
           @speed_x  = 0
-       end
-       if @speed_x >-1 && @speed_x < 0
+        end
+        if @speed_x >-1 && @speed_x < 0
         @speed_x = 0
-       end
+        end
       end
       return @dx
+    end
+
+    #160行目から移動してprivateを外した
+    def validate_player_pos_limit
+      if @dx.nil? or @dy.nil?
+        return false
+      end
+      tmp_x = @x + @dx
+      tmp_y = @y + @dy
+      stop_x_direction if tmp_x > @map.width - MapChip::CHIP_SIZE #|| tmp_x < 0
+      #stop_y_direction if tmp_y > @map.height - MapChip::CHIP_SIZE #|| tmp_y < 0
+      if tmp_x<0 || tmp_y<0
+        return true
+      end
+      return false
     end
 
     private
@@ -155,12 +170,7 @@ module Game
     # 未考慮ポイント１: マップチップと右面衝突した場合、そのまま放置するとマップ外にキャラクタが押し出される。
     # 　　　　　　　　　これはつまりプレイヤーがマップチップとマップ領域の壁に挟まれて「潰される」状況を意味するが、
     # 　　　　　　　　　本サンプルでは特にそれに対してアクションは取っていない。
-    def validate_player_pos_limit
-      tmp_x = @x + @dx
-      tmp_y = @y + @dy
-      stop_x_direction if tmp_x > @map.width - MapChip::CHIP_SIZE || tmp_x < 0
-      stop_y_direction if tmp_y > @map.height - MapChip::CHIP_SIZE || tmp_y < 0
-    end
+    
 
     # プレイヤーのマップ上の座標に対するマップチップの通過可否判定
     def check_map_interaction
