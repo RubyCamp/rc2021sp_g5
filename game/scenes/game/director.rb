@@ -47,7 +47,7 @@ module Game
         if @player.scroll_x(Input.x) > 0
           @map.set_scroll_direction(1,@player.scroll_y)
         else
-          @map.set_scroll_direction(0,@player.scroll_y)
+          @map.set_scroll_direction(1,@player.scroll_y)
         end
 
     end
