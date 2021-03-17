@@ -3,6 +3,7 @@ module Game
   # シーン管理用ディレクタークラス
   class Director < DirectorBase
     DEBUG_MODE = true
+    @dx = 0
 
     # 初期化
     def initialize
@@ -38,8 +39,12 @@ module Game
           Window.draw(pos[0], pos[1], @debug_box)
         end
       end
-
-      @map.set_scroll_direction(1,Input.y)
+        @dy = @player.scroll_y
+        if @player.scroll_x(Input.x) > 0
+          @map.set_scroll_direction(1,@player.scroll_y)
+        else
+          @map.set_scroll_direction(0,@player.scroll_y)
+        end
 
     end
 
