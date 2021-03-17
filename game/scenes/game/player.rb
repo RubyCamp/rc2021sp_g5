@@ -165,7 +165,7 @@ module Game
       return false
     end
 
-    # X軸方向の移動量をクリアする
+    ## X軸方向の移動量をクリアする
     def stop_x_direction
       @dx = 0
       @speed_x = 0
