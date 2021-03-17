@@ -3,11 +3,12 @@ module Game
   # シーン管理用ディレクタークラス
   class Director < DirectorBase
     DEBUG_MODE = true
+    @dx = 0
 
     # 初期化
     def initialize
       player_img =  Image.load("images/player.png")
-      @map = Map.new(50, 50, 2, 5, 15)
+      @map = Map.new(50, 50, 2, 5, 5)
       @map.set_scroll_direction(1,1)
       @player = Player.new(10, 10, player_img, @map)
       @font = Font.new(28)
@@ -38,8 +39,13 @@ module Game
           Window.draw(pos[0], pos[1], @debug_box)
         end
       end
-
-      @map.set_scroll_direction(1,Input.y)
+        @dy = @player.scroll_y
+        #puts @dy
+        if @player.scroll_x(Input.x) > 0
+          @map.set_scroll_direction(1,@player.scroll_y)
+        else
+          @map.set_scroll_direction(0,@player.scroll_y)
+        end
 
     end
 

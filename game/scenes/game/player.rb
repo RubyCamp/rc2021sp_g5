@@ -4,6 +4,7 @@ module Game
     include MathHelper # 他のプログラムと共用する数学系ヘルパーメソッドを読み込む
 
     SPEED_LIMIT_X = 24 # X軸方向の速度上限
+    SPEED_LIMIN_X = -48 
 
     # 初期化
     # 未考慮ポイント１: マップオブジェクトの参照を受け取って内部で保持している（マップと密結合している）。
@@ -70,6 +71,35 @@ module Game
       @jump_power /= 2
     end
 
+    def scroll_y
+      @dy = @g
+      @dy += @jump_power * Math.sin(@jump_angle) if jumping?
+      @jump_power -= 2
+      @jump_power = 0 if @jump_power <= 0
+      return @dy
+    end
+
+    def scroll_x(input_x)
+    @dx = 0
+    @input_x = input_x
+    @speed_x += input_x
+    @speed_x = SPEED_LIMIT_X if @speed_x > SPEED_LIMIT_X
+    @speed_x = SPEED_LIMIN_X if @speed_x < SPEED_LIMIN_X
+    @dx = @speed_x / 10.0 if @speed_x != 0
+    @dx -= @map.scroll_direction_x if @input_x < 0  # スクロールと逆向きへの移動時は、スクロール分の移動量を打ち消す必要があるため
+      puts @dx
+      if input_x == 0
+        @speed_x /= 1.1 
+        if @speed_x < 1 && @speed_x > 0
+          @speed_x  = 0
+       end
+       if @speed_x >-1 && @speed_x < 0
+        @speed_x = 0
+       end
+      end
+      return @dx
+    end
+
     private
 
     # 1フレーム分の移動量計算に必要な変数の初期化
@@ -92,14 +122,33 @@ module Game
       @speed_x += input_x
       @speed_x = SPEED_LIMIT_X if @speed_x > SPEED_LIMIT_X
       @dx = @speed_x / 10.0 if @speed_x != 0
-      @dx -= @map.scroll_direction_x if @input_x < 0  # スクロールと逆向きへの移動時は、スクロール分の移動量を打ち消す必要があるため。
-    end
+      @dx -= @map.scroll_direction_x if @input_x < 0  # スクロールと逆向きへの移動時は、スクロール分の移動量を打ち消す必要があるため
+      if input_x == 0
+        if @speed_x < 0
+          @speed_x /= 1.1 
+          if @speed_x < 1 && @speed_x > 0
+            @speed_x  = 0
+          end
+        end
+        if @speed_x > 0
+          @speed_x /=1.1
+          if @speed_x >-1 && @speed_x < 0
+          @speed_x = 0
+          end
+        end
+      end
+    end 
+
+
 
     # プレイヤーに重力分の移動を加算
     def add_gravity_effect
-      @dy = @g
+      @dy = @g 
       @dy += @jump_power * Math.sin(@jump_angle) if jumping?
       @jump_power -= 2
+      if @collision_bottom == false
+        @dy += 1.4
+      end
       @jump_power = 0 if @jump_power <= 0
     end
 
