@@ -52,6 +52,10 @@ module Game
 
     end
 
+    def gameover?
+      return @player.validate_player_pos_limit
+    end
+
     private
 
     # タイトル文字列描画
