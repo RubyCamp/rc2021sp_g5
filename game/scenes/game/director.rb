@@ -8,7 +8,7 @@ module Game
     # 初期化
     def initialize
       player_img =  Image.load("images/player.png")
-      @map = Map.new(50, 50, 2, 5, 5)
+      @map = Map.new(50, 50, 2, 5, 15)
       @map.set_scroll_direction(1,1)
       @player = Player.new(10, 10, player_img, @map)
       @font = Font.new(28)
