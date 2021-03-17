@@ -40,7 +40,6 @@ module Game
         end
       end
         @dy = @player.scroll_y
-        #puts @dy
         if @player.scroll_x(Input.x) > 0
           @map.set_scroll_direction(1,@player.scroll_y)
         else
