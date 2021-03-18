@@ -1,6 +1,7 @@
 module Game
   class Enemy < Sprite
     @@collection = []
+    @@weapon_check = 0
 
     def self.collection
       @@collection
@@ -15,7 +16,7 @@ module Game
       self.y = y
       self.image = img
       @enemy_img = img
-      @enemy_img.set_color_key(C_WHITE) # 指定された画像のC_WHITE（白色）部分を透明化
+      #@enemy_img.set_color_key(C_WHITE) # 指定された画像のC_WHITE（白色）部分を透明化
       super(self.x,self.y,self.image)
       @x = x
       @y = y
@@ -29,11 +30,20 @@ module Game
     def update
       self.x += rand(5) - 3
       #self.x = @x
-      #self.y = @y - 50 #rand(5) - 3
+      self.y = @y - 20  #rand(5) - 3
+    end
+
+    def self.weapon_check
+      return @@weapon_check
+    end
+
+    def self.weapon_re_check
+      @@weapon_check = 0
     end
 
     def hit(obj)
       self.class.collection.delete(self)
+      @@weapon_check = 1
     end
   end
 end

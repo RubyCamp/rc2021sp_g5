@@ -2,6 +2,7 @@
 module Game
   class Weapon < Sprite
     @@collection = []
+    @weapon_checks = 0
 
     def initialize(x,y,img)
       @x_1 = x + 50
@@ -43,6 +44,12 @@ module Game
     
     def hit(obj)
       self.class.collection.delete(self)
+      Enemy.weapon_re_check
+    end
+
+    def self.hits
+      @@collection.delete(self.collection)
+      Enemy.weapon_re_check
       puts 1
     end
 
@@ -66,11 +73,12 @@ module Game
       @debug_box = RenderTarget.new(32, 32, C_YELLOW)
       @weapons = []
       @enemys = []
-      @enemy_img = Image.load("images/BOSS.png")
+      @enemy_img = Image.load("images/pose.png")
+      @boss_enemy_img = Image.load("images/BOSS.png")
       #@enemy = Enemy.new(600,50,@enemy_img,@map)
       @goalcharactor_img = Image.load("images/princes.png")
-      @goalcharactor = Game::Goalcharactor.new(400,50,@goalcharactor_img,@map)
-      Game::Goalcharactor.add(600, 90, @goalcharactor_img,@map)
+      @goalcharactor = Game::Goalcharactor.new(750,289,@goalcharactor_img,@map)
+      #Game::Goalcharactor.add(600, 90, @goalcharactor_img,@map)
       @sound1=Sound.new("ショット.wav")
     end
 
@@ -83,11 +91,17 @@ module Game
     def play
       @debug_boxes = []
 
-      if @@check_count % 60 == 0
+      if @@check_count % 80 == 0
         #@enemys << Enemy.new(480,70 ,@enemy_img,@map)
-        Enemy.add(480,70 ,@enemy_img)
+        if @@check_count < 200  && @@check_count > 50
+          Enemy.add(600 , 365 ,@enemy_img)
+        end
+        if @@check_count > 225 && @@check_count < 400
+          Enemy.add(800, 175 ,@enemy_img)
+        end
       end
 
+      
       Enemy.collection.each do |enemy|
         enemy.update
         enemy.draw
@@ -95,6 +109,17 @@ module Game
       #@enemy.update
       #@enemy.draw
 
+      end
+
+      if @@check_count ==  1200 
+        Boss_enemy.add(700,340,@boss_enemy_img)
+      end
+
+
+      Boss_enemy.collection.each do |boss_enemy|
+        boss_enemy.update
+        boss_enemy.draw
+        puts 2
       end
 
       if Input.key_push?(K_SPACE)
@@ -121,10 +146,10 @@ module Game
       #  weapon.draw
       #end
 
-      p Sprite.check( @enemys , @weapons)
+      #p Sprite.check( @enemys , @weapons)
 
       @@check_count += 1
-      #puts @@check_count
+      puts @@check_count
       #puts @@check_flag
 
       @map.update
@@ -150,7 +175,7 @@ module Game
           @map.set_scroll_direction(0,0)
         end
 
-        if @@check_count > 1400 && @@check_flag == 0
+        if @@check_count > 1200 && @@check_flag == 0
           @@check_flag = 1
           @@check_goal = 0
         end
@@ -159,7 +184,11 @@ module Game
             @goalcharactor.draw
            Sprite.check(@player, @goalcharactor)
         end
-        p Sprite.check( Weapon.collection, Enemy.collection)
+        Sprite.check( Weapon.collection, Enemy.collection)
+        Sprite.check(Weapon.collection, Boss_enemy.collection)
+        if Enemy.weapon_check == 1
+          Weapon.hits
+        end
         gameover?
     end
 
@@ -170,7 +199,7 @@ module Game
       #end
       #if Sprite.check(@weapons,@enemys) == true
       #if Sprite.check(@player,@enemys) == true
-      if Sprite.check(@player,Enemy.collection) == true
+      if Sprite.check(@player,Enemy.collection) == true ||  Sprite.check(@player,Boss_enemy.collection) == true
         Scene.move_to(:gameover)
       end  
       return @player.gameover? 
