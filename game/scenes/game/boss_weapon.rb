@@ -29,7 +29,7 @@ module Game
      def update
        self.x += rand(5) - 3
        #self.x = @x
-       self.y = @y -20  #rand(5) - 3
+       self.y = @y -16  #rand(5) - 3
      end
  
      def self.weapon_check
