@@ -50,7 +50,6 @@ Window.loop do
   Scene.move_to(:map_editor) if Input.key_push?(K_M)
   Scene.move_to(:title) if Input.key_push?(K_T)
   Scene.move_to(:gameover) if game_director.gameover?
-  #Scene.move_to(:gameover) if @player===@enemy  #@つけるかわからない。@enemyは暫定的に
   Scene.play
 
 end

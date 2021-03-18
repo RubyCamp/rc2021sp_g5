@@ -117,7 +117,10 @@ module Game
 
 
     def gameover?
-      return @player.gameover?
+      @enemys.each do |enemy|
+        return true if enemy === @player 
+      end
+      return @player.gameover? 
     end
 
     private
