@@ -5,6 +5,7 @@ module Game
 
     attr_accessor :scroll_direction_x, :scroll_direction_y
 
+
     # 初期化
     def initialize(root_x, root_y, speed = nil, mx = nil, my = nil)
       super

@@ -14,6 +14,7 @@ require_relative 'lib/map_base'
 require_relative 'scenes/game/director'
 require_relative 'scenes/game/map'
 require_relative 'scenes/game/player'
+require_relative 'scenes/game/goalcharactor'
 
 require_relative 'scenes/map_editor/director'
 require_relative 'scenes/map_editor/map'
@@ -22,6 +23,10 @@ require_relative 'scenes/map_editor/button'
 
 require_relative 'scenes/title/director'
 require_relative 'scenes/gameover/g_director'
+
+require_relative 'scenes/Congrats/director'
+
+
 
 Window.width = 1024
 Window.height = 768
@@ -33,7 +38,7 @@ Scene.add(game_director, :game)
 Scene.add(MapEditor::Director.new, :map_editor)
 Scene.add(Title::Director.new, :title)
 Scene.add(Gameover::Director.new,:gameover)
-
+Scene.add(Congrats::Director.new, :congrats)
 Scene.move_to(:title)
 
 
@@ -44,7 +49,7 @@ Window.loop do
   Scene.move_to(:map_editor) if Input.key_push?(K_M)
   Scene.move_to(:title) if Input.key_push?(K_T)
   Scene.move_to(:gameover) if game_director.gameover?
-  #Scene.move_to(:gameover) if @player===@enemy  #@つけるかわからない。@enemyは暫定的に
+　#Scene.move_to(:gameover) if @player===@enemy  #@つけるかわからない。@enemyは暫定的に
   Scene.play
 
 end

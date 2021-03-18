@@ -1,6 +1,5 @@
 module Game
   # プレイヤーキャラクタの挙動を制御する
-  #class Player
   class Player < Sprite
     include MathHelper # 他のプログラムと共用する数学系ヘルパーメソッドを読み込む
 
@@ -11,9 +10,10 @@ module Game
     # 未考慮ポイント１: マップオブジェクトの参照を受け取って内部で保持している（マップと密結合している）。
     # 　　　　　　　　　マップとの結合をなるべく疎にしたいが、どのようなアプローチがありえるだろうか？
     def initialize(x, y, img, map)
-
-      self.x=x
-      self.y=y
+      self.x = x
+      self.y = y
+      self.image = img
+      super(self.x ,self.y ,self.image)
       @x = x
       @y = y
       #@image = img
@@ -27,6 +27,7 @@ module Game
       @speed_y = 0
       @jump_power = 0
       @jump_angle = 0
+      @jumping = true
     end
 
     #step8playerから引っ張ってきている
@@ -78,13 +79,15 @@ module Game
     end
 
     # ジャンプの開始
-    # 未考慮ポイント１： 敢えて空中でもジャンプ可能としている。空中ジャンプを禁止するにはどうすればよいか？
+    # 未考慮ポイント１: 敢えて空中でもジャンプ可能としている。空中ジャンプを禁止するにはどうすればよいか？
     # 未考慮ポイント２: 敢えて不自然なジャンプにとどめている。天井にぶつかったら止まるし、加速も減速も等速的。
     # 　　　　　　　　　例えば、天井にぶつかる直前にマップ自体を上スクロールするにはどうすればよいか？
     # 　　　　　　　　　例えば、自然な放物線を描くジャンプを実現するには、どの変数がどうなればよいか？
     # 未考慮ポイント３: 左右どちらかが壁に接している場合、ジャンプした瞬間の当たり判定でジャンプが止められてしまう。
     # 　　　　　　　　　これを防止するにはどのような解決策が考えられるか？
     def start_jump
+      return if @jumping
+      @jumping = true
       player_pos = [@x, @y]
       jump_to = [player_pos[0] + @speed_x * 10, player_pos[1] - 10]
       @jump_power, @jump_angle = calc_vector(player_pos, jump_to)
@@ -251,7 +254,8 @@ module Game
       if chip_weight == Map::WALL_CHIP_WEIGHT
         player_view = @map.convert_map_to_win(player_pos)
         @debug_boxes << player_view if Director::DEBUG_MODE
-        stop_y_direction
+        #stop_y_direction
+        @jumping = false
         @y = player_view[1].to_i - @map.root_y - (MapChip::CHIP_SIZE * offset)
         return true
       end

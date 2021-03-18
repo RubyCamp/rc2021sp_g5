@@ -5,6 +5,7 @@ class MapBase < Component
   MAP_DAT_PATH = "data/map.dat"
   WALL_CHIP_NUM = 1
 
+
   attr_accessor :root_x, :root_y, :sp_x, :sp_y, :map_array, :chips, :dir_x, :dir_y, :width, :height
 
   include MapChip
@@ -16,6 +17,7 @@ class MapBase < Component
     self.root_y = root_y
     @mx = mx
     @my = my
+    @scroll_speed = speed
     reload_map_array
     @map_width = self.map_array.first.size
     @map_height = self.map_array.size
@@ -32,6 +34,7 @@ class MapBase < Component
 
     super(self.root_x, self.root_y, self.width, self.height)
   end
+
 
   # マップ配列を再読み込みする
   def reload_map_array
