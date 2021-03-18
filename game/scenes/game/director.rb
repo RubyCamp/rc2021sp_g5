@@ -63,6 +63,7 @@ module Game
     @@check_count = 0
     @@check_goal = 1
     @@rand_atttack = 0
+    @@check_boss_weapon = 0
 
     # 初期化
     def initialize
@@ -119,7 +120,9 @@ module Game
 
       @@rand_atttack = 200
       if @@check_count % @@rand_atttack == 0 && @@check_count > 1200
-        Boss_weapon.add(700,340,Image.new(20, 20).circle_fill(10, 10, 10, C_RED))
+        if @@check_boss_weapon == 0
+          Boss_weapon.add(700,340,Image.new(20, 20).circle_fill(10, 10, 10, C_RED))
+        end
       end
 
 
@@ -196,7 +199,9 @@ module Game
            Sprite.check(@player, @goalcharactor)
         end
         Sprite.check( Weapon.collection, Enemy.collection)
-        Sprite.check(Weapon.collection, Boss_enemy.collection)
+        if Sprite.check(Weapon.collection, Boss_enemy.collection) == true
+          @@check_boss_weapon = 1
+        end
         if Enemy.weapon_check == 1
           Weapon.hits
         end

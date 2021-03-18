@@ -34,6 +34,9 @@ module Game
 
         def hit(obj)
             Scene.move_to(:congrats)
+            @sound1=Sound.new("ファンファーレ8.wav")
+            @sound1.setVolume(230,time=0) 
+            @sound1.play
         end
     end
 end
