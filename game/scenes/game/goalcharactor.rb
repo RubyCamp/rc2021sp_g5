@@ -33,7 +33,6 @@ module Game
         end
 
         def hit(obj)
-            puts 11111
             Scene.move_to(:congrats)
         end
     end
