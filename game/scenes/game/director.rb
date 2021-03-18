@@ -31,7 +31,7 @@ module Game
 
     # 初期化
     def initialize
-      player_img =  Image.load("images/player.png")
+      player_img =  Image.load("images/player1.png")
       @map = Map.new(50, 50, 2, 5, 15)
       @mapbase = MapBase.new(50, 50, 2, 5, 15)
       @map.set_scroll_direction(1,1)
