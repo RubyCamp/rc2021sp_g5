@@ -2,8 +2,8 @@
 module Game
   class Weapon
     def initialize(x,y)
-      @x_1 = x
-      @y_1 = y
+      @x_1 = x + 50
+      @y_1 = y + 60
       @dx_1 = 0
       @dy_1 = 0
       @image1 = Image.new(20, 20).circle_fill(10, 10, 10, C_RED)
@@ -17,6 +17,7 @@ module Game
 
     def draw
       Window.draw(@x_1, @y_1, @image1,1)
+      #p "weapon.y :#{@y_1}"
     end
 
   end
@@ -34,6 +35,7 @@ module Game
       @font = Font.new(28)
       @debug_box = RenderTarget.new(32, 32, C_YELLOW)
       @weapons = []
+      @enemys = []
     end
 
     # Scene遷移時に自動呼出しされる規約メソッド
@@ -45,17 +47,22 @@ module Game
     def play
       @debug_boxes = []
 
+      if Input.key_push?(K_A)
+        @enemys << Enemy.new(@player.x, @player.y)
+      end
+
+      @enemys.each do |enemy|
+        enemy.update
+        enemy.draw
+      end
+
       if Input.key_push?(K_SPACE)
-        #if @collision_bottom
-          @player.start_jump
-          #@dy += @jump_power
-          #@player.update(Input.x)
-        #end
+        @player.start_jump
       end
 
       if Input.key_push?(K_RETURN)
         @weapons << Weapon.new(@player.x,@player.y)
-        p @player.y
+        #p "player.y: #{@player.y}"
       end
       
       @weapons.each do |weapon|
