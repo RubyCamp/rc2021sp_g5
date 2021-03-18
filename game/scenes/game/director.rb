@@ -47,7 +47,7 @@ module Game
       @map.draw
       @debug_boxes += @player.update(Input.x)
       @player.draw
-      title_draw
+      #title_draw
 
 
       #@goalcharactor.update
