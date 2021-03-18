@@ -62,13 +62,18 @@ module Game
       
 
 
+
       # プレイヤーの右面がマップチップと衝突した場合の移動量補正（スクロール分の移動量を打ち消す）
       if @collision_right
         @dx = -@map.scroll_direction_x
       end
-
+      self.x = @x
+      self.y = @y
+      
       @debug_boxes # Directorに表示させたいデバッグボックスの座標群を返す
-    end
+
+
+    end 
 
     # プレイヤーキャラクタを現在位置に描画
     def draw
@@ -122,6 +127,13 @@ module Game
       return @dx
     end
 
+    def x
+      return @x
+    end
+
+    def y
+      return @y
+    end
 
     #160行目から移動してprivateを外した
     def validate_player_pos_limit
@@ -239,7 +251,7 @@ module Game
       if chip_weight == Map::WALL_CHIP_WEIGHT
         player_view = @map.convert_map_to_win(player_pos)
         @debug_boxes << player_view if Director::DEBUG_MODE
-        stop_x_direction
+        #stop_x_direction
         @x = player_view[0].to_i - @map.root_x - (MapChip::CHIP_SIZE * offset)
         return true
       end
@@ -278,5 +290,7 @@ module Game
     def jumping?
       @jump_power > 0
     end
+
+
   end
 end

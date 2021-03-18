@@ -14,6 +14,7 @@ require_relative 'lib/map_base'
 require_relative 'scenes/game/director'
 require_relative 'scenes/game/map'
 require_relative 'scenes/game/player'
+require_relative 'scenes/game/enemy'
 require_relative 'scenes/game/goalcharactor'
 
 require_relative 'scenes/map_editor/director'
@@ -67,6 +68,7 @@ Window.loop do
   end
   Scene.move_to(:map_editor) if Input.key_push?(K_M)
   Scene.move_to(:title) if Input.key_push?(K_T)
+
   if game_director.gameover?
     sound1.stop
     if starting==0
