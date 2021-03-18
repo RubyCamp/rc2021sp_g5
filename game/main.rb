@@ -14,6 +14,7 @@ require_relative 'lib/map_base'
 require_relative 'scenes/game/director'
 require_relative 'scenes/game/map'
 require_relative 'scenes/game/player'
+require_relative 'scenes/game/enemy'
 
 require_relative 'scenes/map_editor/director'
 require_relative 'scenes/map_editor/map'
