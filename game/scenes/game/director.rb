@@ -79,8 +79,9 @@ module Game
         end
     end
 
+
     def gameover?
-      return @player.validate_player_pos_limit
+      return @player.gameover?
     end
 
     private

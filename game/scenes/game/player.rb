@@ -16,9 +16,12 @@ module Game
       super(self.x ,self.y ,self.image)
       @x = x
       @y = y
-      @image = img
-      @image.set_color_key(C_WHITE) # 指定された画像のC_WHITE（白色）部分を透明化
-      @map = map
+      #@image = img
+      self.image=img
+      #@image.set_color_key(C_WHITE) # 指定された画像のC_WHITE（白色）部分を透明化
+      self.image.set_color_key(C_WHITE)
+      
+      @map=map
       @g = 1
       @speed_x = 0
       @speed_y = 0
@@ -26,6 +29,14 @@ module Game
       @jump_angle = 0
       @jumping = true
     end
+
+    #step8playerから引っ張ってきている
+    #def initialize(x, y)
+    #  self.x = x
+    #  self.y = y
+    #  self.image = Image.load("images/player.png")
+    #  self.image.set_color_key(C_WHITE)
+    #end
 
     # 1フレームにおけるプレイヤーの挙動更新
     # - Directorからキー入力のＸ方向の情報を受け取り、自身の挙動を制御する。
@@ -47,7 +58,9 @@ module Game
 
       # 1フレーム分の確定移動量を現在位置に加算
       @x += @dx
-      @y += @dy
+      @y += @dy if validate_player_pos_limit
+      
+
 
       # プレイヤーの右面がマップチップと衝突した場合の移動量補正（スクロール分の移動量を打ち消す）
       if @collision_right
@@ -59,7 +72,10 @@ module Game
 
     # プレイヤーキャラクタを現在位置に描画
     def draw
-      Window.draw(@map.root_x + @x, @map.root_y + @y, @image)
+      #Window.draw(@map.root_x + @x, @map.root_y + @y, @image)
+      self.x=@x
+      self.y=@y
+      Window.draw(@map.root_x + @x, @map.root_y + @y, self.image)
     end
 
     # ジャンプの開始
@@ -106,6 +122,7 @@ module Game
       return @dx
     end
 
+
     #160行目から移動してprivateを外した
     def validate_player_pos_limit
       if @dx.nil? or @dy.nil?
@@ -115,11 +132,29 @@ module Game
       tmp_y = @y + @dy
       stop_x_direction if tmp_x > @map.width - MapChip::CHIP_SIZE #|| tmp_x < 0
       #stop_y_direction if tmp_y > @map.height - MapChip::CHIP_SIZE #|| tmp_y < 0
-      if tmp_x<0 || tmp_y<0
+      if tmp_x<0 || tmp_y<10
+        return false
+      end
+      return true
+    end
+
+    def gameover?
+      if @dx.nil? or @dy.nil?
+        return false
+      end
+      tmp_x = @x + @dx
+      tmp_y = @y + @dy
+      stop_x_direction if tmp_x > @map.width - MapChip::CHIP_SIZE #|| tmp_x < 0
+      #stop_y_direction if tmp_y > @map.height - MapChip::CHIP_SIZE #|| tmp_y < 0
+      if tmp_x<0 
+        #xがーの異常値にあるばあいがあるので記載
+        p [:x, @x, :dx, @dx ]
         return true
       end
       return false
     end
+
+    
 
     private
 
