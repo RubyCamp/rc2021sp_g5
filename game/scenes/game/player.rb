@@ -1,6 +1,6 @@
 module Game
   # プレイヤーキャラクタの挙動を制御する
-  class Player
+  class Player < Sprite
     include MathHelper # 他のプログラムと共用する数学系ヘルパーメソッドを読み込む
 
     SPEED_LIMIT_X = 24 # X軸方向の速度上限
@@ -55,11 +55,14 @@ module Game
 
     # プレイヤーキャラクタを現在位置に描画
     def draw
+      self.x = @x
+      self.y = @y
       Window.draw(@map.root_x + @x, @map.root_y + @y, @image)
+
     end
 
     # ジャンプの開始
-    # 未考慮ポイント１： 敢えて空中でもジャンプ可能としている。空中ジャンプを禁止するにはどうすればよいか？
+    # 未考慮ポイント１: 敢えて空中でもジャンプ可能としている。空中ジャンプを禁止するにはどうすればよいか？
     # 未考慮ポイント２: 敢えて不自然なジャンプにとどめている。天井にぶつかったら止まるし、加速も減速も等速的。
     # 　　　　　　　　　例えば、天井にぶつかる直前にマップ自体を上スクロールするにはどうすればよいか？
     # 　　　　　　　　　例えば、自然な放物線を描くジャンプを実現するには、どの変数がどうなればよいか？
@@ -86,7 +89,7 @@ module Game
       @dx = 0
       @input_x = input_x
       @speed_x += input_x
-     @speed_x = SPEED_LIMIT_X if @speed_x > SPEED_LIMIT_X
+      @speed_x = SPEED_LIMIT_X if @speed_x > SPEED_LIMIT_X
       @speed_x = SPEED_LIMIN_X if @speed_x < SPEED_LIMIN_X
       @dx = @speed_x / 10.0 if @speed_x != 0
       @dx -= @map.scroll_direction_x if @input_x < 0  # スクロールと逆向きへの移動時は、スクロール分の移動量を打ち消す必要があるため
@@ -94,10 +97,10 @@ module Game
         @speed_x /= 1.1 
         if @speed_x < 1 && @speed_x > 0
           @speed_x  = 0
-       end
-       if @speed_x >-1 && @speed_x < 0
+        end
+        if @speed_x >-1 && @speed_x < 0
         @speed_x = 0
-       end
+        end
       end
       return @dx
     end
@@ -108,6 +111,21 @@ module Game
 
     def y
       return @y
+    end
+
+    #160行目から移動してprivateを外した
+    def validate_player_pos_limit
+      if @dx.nil? or @dy.nil?
+        return false
+      end
+      tmp_x = @x + @dx
+      tmp_y = @y + @dy
+      stop_x_direction if tmp_x > @map.width - MapChip::CHIP_SIZE #|| tmp_x < 0
+      stop_y_direction if tmp_y > @map.height - MapChip::CHIP_SIZE #|| tmp_y < 0
+      if tmp_x<0 || tmp_y<0
+        return true
+      end
+      return false
     end
 
     private
@@ -166,12 +184,7 @@ module Game
     # 未考慮ポイント１: マップチップと右面衝突した場合、そのまま放置するとマップ外にキャラクタが押し出される。
     # 　　　　　　　　　これはつまりプレイヤーがマップチップとマップ領域の壁に挟まれて「潰される」状況を意味するが、
     # 　　　　　　　　　本サンプルでは特にそれに対してアクションは取っていない。
-    def validate_player_pos_limit
-      tmp_x = @x + @dx
-      tmp_y = @y + @dy
-      stop_x_direction if tmp_x > @map.width - MapChip::CHIP_SIZE || tmp_x < 0
-      stop_y_direction if tmp_y > @map.height - MapChip::CHIP_SIZE || tmp_y < 0
-    end
+    
 
     # プレイヤーのマップ上の座標に対するマップチップの通過可否判定
     def check_map_interaction
