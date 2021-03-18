@@ -23,10 +23,12 @@ module Game
           end
 
         def update
+            self.x = @x
+            self.y = @y
         end
 
         def draw
-            Window.draw(@x, @y, @image)
+            Window.draw(@map.root_x + @x, @map.root_y + @y, @image)
             #Window.draw(@x, @y, @image)
         end
 
