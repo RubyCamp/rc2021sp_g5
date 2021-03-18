@@ -1,6 +1,6 @@
 module Game
   # プレイヤーキャラクタの挙動を制御する
-  class Player
+  class Player < Sprite
     include MathHelper # 他のプログラムと共用する数学系ヘルパーメソッドを読み込む
 
     SPEED_LIMIT_X = 24 # X軸方向の速度上限
@@ -10,6 +10,10 @@ module Game
     # 未考慮ポイント１: マップオブジェクトの参照を受け取って内部で保持している（マップと密結合している）。
     # 　　　　　　　　　マップとの結合をなるべく疎にしたいが、どのようなアプローチがありえるだろうか？
     def initialize(x, y, img, map)
+      self.x = x
+      self.y = y
+      self.image = img
+      super(self.x ,self.y ,self.image)
       @x = x
       @y = y
       @image = img

@@ -14,6 +14,7 @@ require_relative 'lib/map_base'
 require_relative 'scenes/game/director'
 require_relative 'scenes/game/map'
 require_relative 'scenes/game/player'
+require_relative 'scenes/game/goalcharactor'
 
 require_relative 'scenes/map_editor/director'
 require_relative 'scenes/map_editor/map'
@@ -24,6 +25,8 @@ require_relative 'scenes/title/director'
 require_relative 'scenes/gameover/g_director'
 
 require_relative 'scenes/Congrats/director'
+
+
 
 Window.width = 1024
 Window.height = 768
@@ -45,6 +48,6 @@ Window.loop do
   Scene.move_to(:map_editor) if Input.key_push?(K_M)
   Scene.move_to(:title) if Input.key_push?(K_T)
   Scene.move_to(:gameover) if game_director.gameover?
-  Scene.move_to(:congrats)  if Input.key_push?(K_C)
+
   Scene.play
 end
