@@ -10,6 +10,7 @@ module Gameover
          # Sceneクラスから、move_toによるシーン切り替え時に自動的に呼び出されるメソッド
         def reload
         end
+        
 
         # 1フレーム分の描画処理
         def play
