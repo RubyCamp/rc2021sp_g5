@@ -3,7 +3,7 @@ module Gameover
 
             # 初期化
         def initialize
-            @gameover_img =  Image.load("images/gameover.png")
+            @gameover_img =  Image.load("images/gameover2.png")
             @font = Font.new(54)
         end
         
