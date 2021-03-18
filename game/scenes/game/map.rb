@@ -5,6 +5,7 @@ module Game
 
     attr_accessor :scroll_direction_x, :scroll_direction_y
 
+
     # 初期化
     def initialize(root_x, root_y, speed = nil, mx = nil, my = nil)
       super
@@ -13,7 +14,7 @@ module Game
 
     # マップスクロール方向を規定する
     def set_scroll_direction(sdx, sdy)
-      self.scroll_direction_x, self.scroll_direction_y = sdx, sdy
+      self.scroll_direction_x, self.scroll_direction_y = sdx, sdy 
     end
 
     # 1フレーム分のマップスクロール処理

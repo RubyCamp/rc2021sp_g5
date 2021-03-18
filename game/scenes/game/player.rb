@@ -1,9 +1,10 @@
 module Game
   # プレイヤーキャラクタの挙動を制御する
-  class Player
+  class Player < Sprite
     include MathHelper # 他のプログラムと共用する数学系ヘルパーメソッドを読み込む
 
     SPEED_LIMIT_X = 24 # X軸方向の速度上限
+    SPEED_LIMIN_X = -48 
 
     # 初期化
     # 未考慮ポイント１: マップオブジェクトの参照を受け取って内部で保持している（マップと密結合している）。
@@ -54,7 +55,10 @@ module Game
 
     # プレイヤーキャラクタを現在位置に描画
     def draw
+      self.x = @x
+      self.y = @y
       Window.draw(@map.root_x + @x, @map.root_y + @y, @image)
+
     end
 
     # ジャンプの開始
@@ -71,6 +75,57 @@ module Game
       jump_to = [player_pos[0] + @speed_x * 10, player_pos[1] - 10]
       @jump_power, @jump_angle = calc_vector(player_pos, jump_to)
       @jump_power /= 2
+    end
+
+    def scroll_y
+      @dy = @g
+      @dy += @jump_power * Math.sin(@jump_angle) if jumping?
+      @jump_power -= 2
+      @jump_power = 0 if @jump_power <= 0
+      return @dy
+    end
+
+    def scroll_x(input_x)
+      @dx = 0
+      @input_x = input_x
+      @speed_x += input_x
+      @speed_x = SPEED_LIMIT_X if @speed_x > SPEED_LIMIT_X
+      @speed_x = SPEED_LIMIN_X if @speed_x < SPEED_LIMIN_X
+      @dx = @speed_x / 10.0 if @speed_x != 0
+      @dx -= @map.scroll_direction_x if @input_x < 0  # スクロールと逆向きへの移動時は、スクロール分の移動量を打ち消す必要があるため
+      if input_x == 0
+        @speed_x /= 1.1 
+        if @speed_x < 1 && @speed_x > 0
+          @speed_x  = 0
+        end
+        if @speed_x >-1 && @speed_x < 0
+        @speed_x = 0
+        end
+      end
+      return @dx
+    end
+
+    def x
+      return @x
+    end
+
+    def y
+      return @y
+    end
+
+    #160行目から移動してprivateを外した
+    def validate_player_pos_limit
+      if @dx.nil? or @dy.nil?
+        return false
+      end
+      tmp_x = @x + @dx
+      tmp_y = @y + @dy
+      stop_x_direction if tmp_x > @map.width - MapChip::CHIP_SIZE #|| tmp_x < 0
+      stop_y_direction if tmp_y > @map.height - MapChip::CHIP_SIZE #|| tmp_y < 0
+      if tmp_x<0 || tmp_y<0
+        return true
+      end
+      return false
     end
 
     private
@@ -95,14 +150,33 @@ module Game
       @speed_x += input_x
       @speed_x = SPEED_LIMIT_X if @speed_x > SPEED_LIMIT_X
       @dx = @speed_x / 10.0 if @speed_x != 0
-      @dx -= @map.scroll_direction_x if @input_x < 0  # スクロールと逆向きへの移動時は、スクロール分の移動量を打ち消す必要があるため。
-    end
+      @dx -= @map.scroll_direction_x if @input_x < 0  # スクロールと逆向きへの移動時は、スクロール分の移動量を打ち消す必要があるため
+      if input_x == 0
+        if @speed_x < 0
+          @speed_x /= 1.1 
+          if @speed_x < 1 && @speed_x > 0
+            @speed_x  = 0
+          end
+        end
+        if @speed_x > 0
+          @speed_x /=1.1
+          if @speed_x >-1 && @speed_x < 0
+          @speed_x = 0
+          end
+        end
+      end
+    end 
+
+
 
     # プレイヤーに重力分の移動を加算
     def add_gravity_effect
-      @dy = @g
+      @dy = @g 
       @dy += @jump_power * Math.sin(@jump_angle) if jumping?
       @jump_power -= 2
+      if @collision_bottom == false
+        @dy += 1.4
+      end
       @jump_power = 0 if @jump_power <= 0
     end
 
@@ -110,12 +184,7 @@ module Game
     # 未考慮ポイント１: マップチップと右面衝突した場合、そのまま放置するとマップ外にキャラクタが押し出される。
     # 　　　　　　　　　これはつまりプレイヤーがマップチップとマップ領域の壁に挟まれて「潰される」状況を意味するが、
     # 　　　　　　　　　本サンプルでは特にそれに対してアクションは取っていない。
-    def validate_player_pos_limit
-      tmp_x = @x + @dx
-      tmp_y = @y + @dy
-      stop_x_direction if tmp_x > @map.width - MapChip::CHIP_SIZE || tmp_x < 0
-      stop_y_direction if tmp_y > @map.height - MapChip::CHIP_SIZE || tmp_y < 0
-    end
+    
 
     # プレイヤーのマップ上の座標に対するマップチップの通過可否判定
     def check_map_interaction
@@ -142,7 +211,7 @@ module Game
       if chip_weight == Map::WALL_CHIP_WEIGHT
         player_view = @map.convert_map_to_win(player_pos)
         @debug_boxes << player_view if Director::DEBUG_MODE
-        stop_x_direction
+        #stop_x_direction
         @x = player_view[0].to_i - @map.root_x - (MapChip::CHIP_SIZE * offset)
         return true
       end
@@ -181,5 +250,7 @@ module Game
     def jumping?
       @jump_power > 0
     end
+
+
   end
 end
