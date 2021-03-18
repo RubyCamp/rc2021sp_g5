@@ -42,14 +42,43 @@ Scene.add(Congrats::Director.new, :congrats)
 Scene.move_to(:title)
 
 
+sound1=Sound.new("戦闘曲.wav")
+sound1.loop_count=-1
+sound1.setVolume(22,time=0) #第一引数はvolumeの大きさ。ふつうは230。
+
+sound2=Sound.new("gameover.wav")
+#sound2.loop_count=0
+sound2.setVolume(22,time=0) #第一引数はvolumeの大きさ。ふつうは230。
+
+start=0
+starting=0
 
 Window.loop do
   break if Input.key_push?(K_ESCAPE)
-  Scene.move_to(:game) if Input.key_push?(K_G)
+  if Input.key_push?(K_G)
+    if start==0
+      sound1.play
+      start=1
+    end
+    if Input.keyPush?(K_Z)
+      sound1.stop
+    end
+    Scene.move_to(:game) 
+  end
   Scene.move_to(:map_editor) if Input.key_push?(K_M)
   Scene.move_to(:title) if Input.key_push?(K_T)
-  Scene.move_to(:gameover) if game_director.gameover?
-　#Scene.move_to(:gameover) if @player===@enemy  #@つけるかわからない。@enemyは暫定的に
+  if game_director.gameover?
+    sound1.stop
+    if starting==0
+      sound2.play
+      starting=1
+    end
+    Scene.move_to(:gameover) 
+  end
+  #Scene.move_to(:gameover) if @player===@enemy  #@つけるかわからない。@enemyは暫定的に
   Scene.play
 
 end
+
+sound1.dispose
+sound2.dispose
