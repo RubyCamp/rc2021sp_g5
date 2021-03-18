@@ -27,6 +27,7 @@ module Game
     @dx = 0
     @@check_flag = 0
     @@check_count = 0
+    @@check_goal = 1
 
     # 初期化
     def initialize
@@ -39,9 +40,9 @@ module Game
       @debug_box = RenderTarget.new(32, 32, C_YELLOW)
       @weapons = []
       @enemys = []
-      @goalcharactor_img = Image.new(64,64,C_RED)
-      @goalcharactor = Game::Goalcharactor.new(100,100,@goalcharactor_img,@map)
-      Game::Goalcharactor.add(100, 100, @goalcharactor_img,@map)
+      @goalcharactor_img = Image.load("images/princes.png")
+      @goalcharactor = Game::Goalcharactor.new(600,90,@goalcharactor_img,@map)
+      Game::Goalcharactor.add(600, 90, @goalcharactor_img,@map)
     end
 
     # Scene遷移時に自動呼出しされる規約メソッド
@@ -84,15 +85,12 @@ module Game
       @map.draw
       @debug_boxes += @player.update(Input.x)
       @player.draw
-      title_draw
+      #title_draw
 
 
-      Goalcharactor.collection.each do |goalcharactor|
-        goalcharactor.update
-        goalcharactor.draw
-      end
-      Sprite.check(@py,@pg)
-
+      #@goalcharactor.update
+      #@goalcharactor.draw
+      #Sprite.check(@player,@goalcharactor)
 
       if DEBUG_MODE
         @debug_boxes.each do |pos|
@@ -100,20 +98,20 @@ module Game
         end
       end
         @dy = @player.scroll_y
-        if @player.scroll_x(Input.x) > 0
+        if @@check_flag == 0
           @map.set_scroll_direction(1,@player.scroll_y)
         else
-          @map.set_scroll_direction(1,@player.scroll_y)
+          @map.set_scroll_direction(0,0)
         end
 
-        if @@check_count > 1200 && @@check_flag == 0
+        if @@check_count > 1400 && @@check_flag == 0
           @@check_flag = 1
+          @@check_goal = 0
         end
 
-        if @check_flaf == 1
-        #  @goalcharactor.update
-        #  @goalcharactor.draw
-        #  Sprite.check(@player, @goalcharactor)
+        if @@check_flag == 1
+            @goalcharactor.draw
+           Sprite.check(@player, @goalcharactor)
         end
     end
 

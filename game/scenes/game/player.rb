@@ -62,13 +62,18 @@ module Game
       
 
 
+
       # プレイヤーの右面がマップチップと衝突した場合の移動量補正（スクロール分の移動量を打ち消す）
       if @collision_right
         @dx = -@map.scroll_direction_x
       end
-
+      self.x = @x
+      self.y = @y
+      
       @debug_boxes # Directorに表示させたいデバッグボックスの座標群を返す
-    end
+
+
+    end 
 
     # プレイヤーキャラクタを現在位置に描画
     def draw
