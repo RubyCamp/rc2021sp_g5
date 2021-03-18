@@ -120,8 +120,8 @@ module Game
 
       @@rand_atttack = 200
       if @@check_count % @@rand_atttack == 0 && @@check_count > 1200
-        if @@check_boss_weapon == 0
-          Boss_weapon.add(700,340,Image.new(20, 20).circle_fill(10, 10, 10, C_RED))
+        if @@check_boss_weapon < 100
+          Boss_weapon.add(700,340, Image.load("images/Boss_attack.png"))
         end
       end
 
@@ -141,7 +141,7 @@ module Game
       end
 
       if Input.key_push?(K_RETURN)
-        Weapon.add(@player.x,@player.y, Image.new(20, 20).circle_fill(10, 10, 10, C_RED))
+        Weapon.add(@player.x,@player.y,Image.new(20, 20).circle_fill(10, 10, 10, C_RED))
         #@weapons << Weapon.new(@player.x,@player.y, Image.new(20, 20).circle_fill(10, 10, 10, C_RED))
         @sound1.setVolume(230,time=0) 
         @sound1.play
@@ -200,7 +200,7 @@ module Game
         end
         Sprite.check( Weapon.collection, Enemy.collection)
         if Sprite.check(Weapon.collection, Boss_enemy.collection) == true
-          @@check_boss_weapon = 1
+          @@check_boss_weapon += 1
         end
         if Enemy.weapon_check == 1
           Weapon.hits

@@ -15,7 +15,7 @@ module Game
        self.y = y
        self.image = img
        @enemy_img = img
-       #@enemy_img.set_color_key(C_WHITE) # 指定された画像のC_WHITE（白色）部分を透明化
+       @enemy_img.set_color_key(C_WHITE) # 指定された画像のC_WHITE（白色）部分を透明化
        super(self.x,self.y,self.image)
        @x = x
        @y = y
