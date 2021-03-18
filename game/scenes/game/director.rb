@@ -47,7 +47,7 @@ module Game
       @map.draw
       @debug_boxes += @player.update(Input.x)
       @player.draw
-      title_draw
+      #title_draw
 
 
       #@goalcharactor.update
@@ -63,7 +63,7 @@ module Game
         if @@check_flag == 0
           @map.set_scroll_direction(1,@player.scroll_y)
         else
-          @map.set_scroll_direction(0,@player.scroll_y)
+          @map.set_scroll_direction(0,0)
         end
 
         if @@check_count > 1400 && @@check_flag == 0
