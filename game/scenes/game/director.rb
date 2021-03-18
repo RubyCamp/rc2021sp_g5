@@ -1,13 +1,27 @@
 # マップエディタモジュール
 module Game
-  class Weapon
-    def initialize(x,y)
+  class Weapon < Sprite
+    @@collection = []
+
+    def initialize(x,y,img)
       @x_1 = x + 50
       @y_1 = y + 60
       @dx_1 = 0
       @dy_1 = 0
-      @image1 = Image.new(20, 20).circle_fill(10, 10, 10, C_RED)
+      @image1 = img
+      self.x = @x_1 
+      self.y = @y_1
+      self.image = @image1 
+      super(self.x,self.y,self.image)
 
+    end
+
+    def self.collection
+      @@collection 
+   end
+   
+   def self.add(x, y, image )
+    @@collection << self.new(x, y, image)
     end
 
     def move
@@ -17,7 +31,19 @@ module Game
 
     def draw
       Window.draw(@x_1, @y_1, @image1,1)
+      #Window.draw(@map.root_x + @x, @map.root_y + @y, @image1,1)
       #p "weapon.y :#{@y_1}"
+    end
+
+    def update
+      self.x = @x_1
+      self.y = @y_1
+    end
+
+    
+    def hit(obj)
+      self.class.collection.delete(self)
+      puts 1
     end
 
   end
@@ -40,9 +66,12 @@ module Game
       @debug_box = RenderTarget.new(32, 32, C_YELLOW)
       @weapons = []
       @enemys = []
+      @enemy_img = Image.load("images/BOSS.png")
+      #@enemy = Enemy.new(600,50,@enemy_img,@map)
       @goalcharactor_img = Image.load("images/princes.png")
-      @goalcharactor = Game::Goalcharactor.new(600,90,@goalcharactor_img,@map)
+      @goalcharactor = Game::Goalcharactor.new(400,50,@goalcharactor_img,@map)
       Game::Goalcharactor.add(600, 90, @goalcharactor_img,@map)
+      @sound1=Sound.new("ショット.wav")
     end
 
     # Scene遷移時に自動呼出しされる規約メソッド
@@ -54,13 +83,18 @@ module Game
     def play
       @debug_boxes = []
 
-      if Input.key_push?(K_A)
-        @enemys << Enemy.new(@player.x, @player.y)
+      if @@check_count % 60 == 0
+        #@enemys << Enemy.new(480,70 ,@enemy_img,@map)
+        Enemy.add(480,70 ,@enemy_img)
       end
 
-      @enemys.each do |enemy|
+      Enemy.collection.each do |enemy|
         enemy.update
         enemy.draw
+
+      #@enemy.update
+      #@enemy.draw
+
       end
 
       if Input.key_push?(K_SPACE)
@@ -68,18 +102,30 @@ module Game
       end
 
       if Input.key_push?(K_RETURN)
-        @weapons << Weapon.new(@player.x,@player.y)
+        Weapon.add(@player.x,@player.y, Image.new(20, 20).circle_fill(10, 10, 10, C_RED))
+        #@weapons << Weapon.new(@player.x,@player.y, Image.new(20, 20).circle_fill(10, 10, 10, C_RED))
+        @sound1.setVolume(230,time=0) 
+        @sound1.play
         #p "player.y: #{@player.y}"
       end
       
-      @weapons.each do |weapon|
+      Weapon.collection.each do |weapon|
+        weapon.update
         weapon.move
         weapon.draw
       end
+      #@weapons.each do |weapon|
+      #  weapon.move
+      #  weapon.update
+      #  Sprite.check( @enemys , @weapons)
+      #  weapon.draw
+      #end
+
+      p Sprite.check( @enemys , @weapons)
 
       @@check_count += 1
-      puts @@check_count
-      puts @@check_flag
+      #puts @@check_count
+      #puts @@check_flag
 
       @map.update
       @map.draw
@@ -88,7 +134,7 @@ module Game
       #title_draw
 
 
-      #@goalcharactor.update
+      @goalcharactor.update
       #@goalcharactor.draw
       #Sprite.check(@player,@goalcharactor)
 
@@ -113,13 +159,20 @@ module Game
             @goalcharactor.draw
            Sprite.check(@player, @goalcharactor)
         end
+        p Sprite.check( Weapon.collection, Enemy.collection)
+        gameover?
     end
 
 
     def gameover?
-      @enemys.each do |enemy|
-        return true if enemy === @player 
-      end
+      #@enemys.each do |enemy|
+      #  return true if enemy === @player 
+      #end
+      #if Sprite.check(@weapons,@enemys) == true
+      #if Sprite.check(@player,@enemys) == true
+      if Sprite.check(@player,Enemy.collection) == true
+        Scene.move_to(:gameover)
+      end  
       return @player.gameover? 
     end
 

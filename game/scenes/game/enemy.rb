@@ -10,20 +10,26 @@ module Game
       @@collection << self.new(x, y, enemy_img)
     end
 
-    def initialize(x, y)
-      #font = Font.new(24)
-      @enemy_img = Image.load("images/pose.png")
-      #enemy_img.draw_font(16, 16, "敵", font, C_WHITE)
-      self.x, self.y = x + 300, y
+    def initialize(x, y, img)
+      self.x = x
+      self.y = y
+      self.image = img
+      @enemy_img = img
+      @enemy_img.set_color_key(C_WHITE) # 指定された画像のC_WHITE（白色）部分を透明化
+      super(self.x,self.y,self.image)
+      @x = x
+      @y = y
     end
 
     def draw
-      Window.draw(self.x, self.y, @enemy_img, 1)
+      #Window.draw(@map.root_x + @x, @map.rooty +@y, @enemy_img, 1)
+      Window.draw(self.x, self.y, @enemy_img,1)
     end
 
     def update
       self.x += rand(5) - 3
-      #self.y += rand(5) - 3
+      #self.x = @x
+      #self.y = @y - 50 #rand(5) - 3
     end
 
     def hit(obj)
