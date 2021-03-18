@@ -20,6 +20,7 @@ module Game
       @speed_y = 0
       @jump_power = 0
       @jump_angle = 0
+      @jumping = true
     end
 
     # 1フレームにおけるプレイヤーの挙動更新
@@ -65,6 +66,8 @@ module Game
     # 未考慮ポイント３: 左右どちらかが壁に接している場合、ジャンプした瞬間の当たり判定でジャンプが止められてしまう。
     # 　　　　　　　　　これを防止するにはどのような解決策が考えられるか？
     def start_jump
+      return if @jumping
+      @jumping = true
       player_pos = [@x, @y]
       jump_to = [player_pos[0] + @speed_x * 10, player_pos[1] - 10]
       @jump_power, @jump_angle = calc_vector(player_pos, jump_to)
@@ -97,6 +100,14 @@ module Game
        end
       end
       return @dx
+    end
+
+    def x
+      return @x
+    end
+
+    def y
+      return @y
     end
 
     private
@@ -187,7 +198,7 @@ module Game
       if chip_weight == Map::WALL_CHIP_WEIGHT
         player_view = @map.convert_map_to_win(player_pos)
         @debug_boxes << player_view if Director::DEBUG_MODE
-        stop_x_direction
+        #stop_x_direction
         @x = player_view[0].to_i - @map.root_x - (MapChip::CHIP_SIZE * offset)
         return true
       end
@@ -202,7 +213,8 @@ module Game
       if chip_weight == Map::WALL_CHIP_WEIGHT
         player_view = @map.convert_map_to_win(player_pos)
         @debug_boxes << player_view if Director::DEBUG_MODE
-        stop_y_direction
+        #stop_y_direction
+        @jumping = false
         @y = player_view[1].to_i - @map.root_y - (MapChip::CHIP_SIZE * offset)
         return true
       end
@@ -225,5 +237,7 @@ module Game
     def jumping?
       @jump_power > 0
     end
+
+
   end
 end

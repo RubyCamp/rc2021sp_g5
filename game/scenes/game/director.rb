@@ -1,5 +1,25 @@
 # マップエディタモジュール
 module Game
+  class Weapon
+    def initialize(x,y)
+      @x_1 = x
+      @y_1 = y
+      @dx_1 = 0
+      @dy_1 = 0
+      @image1 = Image.new(20, 20).circle_fill(10, 10, 10, C_RED)
+
+    end
+
+    def move
+      @dx_1 = 3
+      @x_1 += @dx_1
+    end
+
+    def draw
+      Window.draw(@x_1, @y_1, @image1,1)
+    end
+
+  end
   # シーン管理用ディレクタークラス
   class Director < DirectorBase
     DEBUG_MODE = true
@@ -13,6 +33,7 @@ module Game
       @player = Player.new(10, 10, player_img, @map)
       @font = Font.new(28)
       @debug_box = RenderTarget.new(32, 32, C_YELLOW)
+      @weapons = []
     end
 
     # Scene遷移時に自動呼出しされる規約メソッド
@@ -26,6 +47,16 @@ module Game
 
       if Input.key_push?(K_SPACE)
         @player.start_jump
+      end
+
+      if Input.key_push?(K_RETURN)
+        @weapons << Weapon.new(@player.x,@player.y)
+        p @player.y
+      end
+      
+      @weapons.each do |weapon|
+        weapon.move
+        weapon.draw
       end
 
       @map.update
@@ -43,7 +74,7 @@ module Game
         if @player.scroll_x(Input.x) > 0
           @map.set_scroll_direction(1,@player.scroll_y)
         else
-          @map.set_scroll_direction(0,@player.scroll_y)
+          @map.set_scroll_direction(1,@player.scroll_y)
         end
 
     end
