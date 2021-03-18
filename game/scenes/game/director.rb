@@ -54,6 +54,7 @@ module Game
     end
 
   end
+
   # シーン管理用ディレクタークラス
   class Director < DirectorBase
     DEBUG_MODE = true
@@ -61,6 +62,7 @@ module Game
     @@check_flag = 0
     @@check_count = 0
     @@check_goal = 1
+    @@rand_atttack = 0
 
     # 初期化
     def initialize
@@ -115,12 +117,21 @@ module Game
         Boss_enemy.add(700,340,@boss_enemy_img)
       end
 
+      @@rand_atttack = 200
+      if @@check_count % @@rand_atttack == 0 && @@check_count > 1200
+        Boss_weapon.add(700,340,Image.new(20, 20).circle_fill(10, 10, 10, C_RED))
+      end
+
 
       Boss_enemy.collection.each do |boss_enemy|
         boss_enemy.update
         boss_enemy.draw
-        puts 2
       end
+      Boss_weapon.collection.each do |boss_weapon|
+        boss_weapon.update
+        boss_weapon.draw
+      end
+      
 
       if Input.key_push?(K_SPACE)
         @player.start_jump
@@ -199,7 +210,8 @@ module Game
       #end
       #if Sprite.check(@weapons,@enemys) == true
       #if Sprite.check(@player,@enemys) == true
-      if Sprite.check(@player,Enemy.collection) == true ||  Sprite.check(@player,Boss_enemy.collection) == true
+      #p Sprite.check(Boss_weapon.collection,@player) == true
+      if Sprite.check(@player,Enemy.collection) == true ||  Sprite.check(@player,Boss_enemy.collection) == true || Sprite.check(@player,Boss_weapon.collection) == true
         Scene.move_to(:gameover)
       end  
       return @player.gameover? 

@@ -17,6 +17,7 @@ require_relative 'scenes/game/player'
 require_relative 'scenes/game/enemy'
 require_relative 'scenes/game/boss_enemy'
 require_relative 'scenes/game/goalcharactor'
+require_relative 'scenes/game/boss_weapon'
 
 require_relative 'scenes/map_editor/director'
 require_relative 'scenes/map_editor/map'

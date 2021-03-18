@@ -37,7 +37,6 @@ module Game
 
         @@weapon_check += 1
         if @@weapon_check == 100
-            puts 1
             self.class.collection.delete(self)
         end
       end
